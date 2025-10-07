@@ -4,7 +4,7 @@
 
 ![ToolFORGE Logo](https://img.shields.io/badge/🧰-ToolFORGE-blue?style=for-the-badge&logoColor=white)
 [![Live Demo](https://img.shields.io/badge/🌐-Live%20Demo-success?style=for-the-badge)](https://ep.mk/)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/KastienDevOp/Tool.io-Toolbox)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/Alchme)
 
 **A comprehensive, AI-powered developer toolbox that makes your coding life easier, more productive, and genuinely enjoyable.**
 
@@ -157,7 +157,7 @@ Want to run ToolFORGE locally or contribute? We'd love to have you!
 **Quick Setup:**
 ```bash
 # Clone the repository
-git clone https://github.com/KastienDevOp/Tool.io-Toolbox.git
+git clone https://github.com/Alchme/Tool.io-Toolbox.git
 cd Tool.io-Toolbox
 
 # Install dependencies
@@ -303,7 +303,7 @@ Deploy to Vercel for the best performance and developer experience:
 3. **Add Environment Variables**: Configure your API keys
 4. **Deploy**: Automatic deployment with every push
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/KastienDevOp/Tool.io-Toolbox)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Alchme/AIToolForge)
 
 ### 🐳 **Docker**
 Run ToolFORGE in a container:
@@ -434,7 +434,7 @@ Special thanks to all our contributors, beta testers, and users who help make To
 
 ### 🚀 Ready to supercharge your development workflow?
 
-**[🌟 Try ToolFORGE Now](https://ep.mk) • [⭐ Star on GitHub](https://github.com/KastienDevOp/Tool.io-Toolbox) • [🐛 Report Issues](https://github.com/KastienDevOp/Tool.io-Toolbox/issues)**
+**[🌟 Try ToolFORGE Now](https://ep.mk) • [⭐ Star on GitHub](https://github.com/Alchme/AIToolForge) • [🐛 Report Issues](https://github.com/Alchme/AIToolForge/issues)**
 
 *Made with ❤️ by developers, for developers*
 
