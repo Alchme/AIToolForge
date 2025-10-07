@@ -1,0 +1,80 @@
+name: Discord Notification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Get commit info
+      id: commit
+      run: |
+        echo "message=$(git log -1 --pretty=%B | head -1)" >> $GITHUB_OUTPUT
+        echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+        echo "hash=$(git log -1 --pretty=%h)" >> $GITHUB_OUTPUT
+        echo "url=https://github.com/${{ github.repository }}/commit/${{ github.sha }}" >> $GITHUB_OUTPUT
+
+    - name: Send Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      run: |
+        curl -H "Content-Type: application/json" \
+        -d '{
+          "content": "",
+          "embeds": [{
+            "title": "🚀 ToolFORGE Platform Update",
+            "description": "New changes have been pushed to the repository!",
+            "url": "https://ep.mk",
+            "color": 3447003,
+            "fields": [
+              {
+                "name": "📝 Commit Message",
+                "value": "```${{ steps.commit.outputs.message }}```",
+                "inline": false
+              },
+              {
+                "name": "👤 Author",
+                "value": "${{ steps.commit.outputs.author }}",
+                "inline": true
+              },
+              {
+                "name": "🔗 Commit",
+                "value": "[`${{ steps.commit.outputs.hash }}`](${{ steps.commit.outputs.url }})",
+                "inline": true
+              },
+              {
+                "name": "🌿 Branch",
+                "value": "${{ github.ref_name }}",
+                "inline": true
+              },
+              {
+                "name": "🛠️ Repository",
+                "value": "[📂 View on GitHub](https://github.com/${{ github.repository }})",
+                "inline": true
+              },
+              {
+                "name": "🌐 Live Platform",
+                "value": "[🔗 Visit ToolFORGE Platform](https://ep.mk)",
+                "inline": true
+              },
+              {
+                "name": "📊 Platform Stats",
+                "value": "🔧 **100+ Tools** • 🎯 **Productivity Focus** • ⚡ **Real-time Updates**",
+                "inline": false
+              }
+            ],
+            "footer": {
+              "text": "ToolFORGE Platform • Boosting productivity with powerful tools",
+              "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+            },
+            "timestamp": "${{ github.event.head_commit.timestamp }}"
+          }]
+        }' \
+        $DISCORD_WEBHOOK

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - ToolFORGE</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 500px;
+        }
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #06b6d4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            background-color: #dc2626;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .success {
+            background-color: #16a34a;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .button {
+            background-color: #06b6d4;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background-color: #0891b2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <h2>Completing Authentication...</h2>
+            <p>Please wait while we sign you in.</p>
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            <h2>Authentication Error</h2>
+            <p id="error-message">Something went wrong during authentication.</p>
+            <p><strong>Possible causes:</strong></p>
+            <ul style="text-align: left; margin: 1rem 0;">
+                <li>GitHub OAuth is not configured in Supabase</li>
+                <li>Invalid OAuth credentials</li>
+                <li>Callback URL mismatch</li>
+            </ul>
+            <a href="/" class="button">Return to ToolFORGE</a>
+        </div>
+        
+        <div id="success" class="success" style="display: none;">
+            <h2>Authentication Successful!</h2>
+            <p>You have been signed in successfully. Redirecting...</p>
+        </div>
+    </div>
+
+    <script>
+        // Check URL parameters for authentication status
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const errorDescription = urlParams.get('error_description');
+        
+        // Check for hash parameters (common in OAuth flows)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const hashError = hashParams.get('error');
+        
+        console.log('URL Params:', Object.fromEntries(urlParams));
+        console.log('Hash Params:', Object.fromEntries(hashParams));
+        
+        if (error || hashError) {
+            // Show error
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            
+            const errorMsg = errorDescription || error || hashError || 'Unknown authentication error';
+            document.getElementById('error-message').textContent = errorMsg;
+            
+            console.error('Authentication error:', errorMsg);
+        } else if (accessToken) {
+            // Success - we have an access token
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('success').style.display = 'block';
+            
+            console.log('Authentication successful, redirecting...');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        } else {
+            // No clear success or error, wait a bit then redirect
+            console.log('No clear auth status, redirecting after timeout...');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 3000);
+        }
+        
+        // Also try to communicate with parent window if in popup
+        if (window.opener) {
+            try {
+                window.opener.postMessage({
+                    type: 'auth-callback',
+                    success: !!accessToken,
+                    error: error || hashError,
+                    params: Object.fromEntries(urlParams),
+                    hash: Object.fromEntries(hashParams)
+                }, window.location.origin);
+                window.close();
+            } catch (e) {
+                console.log('Could not communicate with parent window:', e);
+            }
+        }
+    </script>
+</body>
+</html>
